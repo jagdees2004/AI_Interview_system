@@ -41,21 +41,32 @@ async def extract_resume(
     user_id: str = Depends(get_current_user_id),
 ):
     """Stateless endpoint to extract and parse resume text."""
+    logger.info(f"Resume extraction request for user {user_id}, filename: {resume.filename}")
     if not resume.filename.lower().endswith(".pdf"):
+        logger.warning(f"Rejected non-PDF file: {resume.filename}")
         raise HTTPException(status_code=400, detail="Only PDF resumes are supported")
 
-    file_bytes = await resume.read()
-    
-    text = extract_text_from_pdf(file_bytes)
-    if text.strip():
-        resume_data = await parse_resume(text)
-        skills = resume_data.get("skills", [])
-        summary = resume_data.get("summary", "")
-        context_str = f"Skills: {', '.join(skills)}. {summary}"
-        return ExtractResumeResponse(
-            extracted_text=context_str,
-            structured_data=ResumeData(**resume_data)
-        )
+    try:
+        file_bytes = await resume.read()
+        logger.info(f"Read {len(file_bytes)} bytes from {resume.filename}")
+        
+        text = extract_text_from_pdf(file_bytes)
+        if text.strip():
+            logger.info("Text extracted successfully, sending to LLM for parsing...")
+            resume_data = await parse_resume(text)
+            skills = resume_data.get("skills", [])
+            summary = resume_data.get("summary", "")
+            context_str = f"Skills: {', '.join(skills)}. {summary}"
+            logger.info(f"LLM parsing complete. Extracted {len(skills)} skills.")
+            return ExtractResumeResponse(
+                extracted_text=context_str,
+                structured_data=ResumeData(**resume_data)
+            )
+        else:
+            logger.warning("No text could be extracted from the PDF.")
+    except Exception as e:
+        logger.error(f"Error in extract_resume: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Resume parsing failed: {str(e)}")
     
     return ExtractResumeResponse(
         extracted_text="",

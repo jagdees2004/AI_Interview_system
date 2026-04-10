@@ -34,6 +34,9 @@ export default function Report() {
   };
 
 
+  const handleDownload = () => {
+    window.print();
+  };
 
   if (loading) {
     return (
@@ -57,6 +60,14 @@ export default function Report() {
 
   return (
     <div className="report-page">
+      {/* Print only header */}
+      <div className="print-header no-screen" style={{ display: 'none' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '2px solid var(--primary-500)', paddingBottom: '10px' }}>
+          <h2 style={{ color: 'var(--primary-600)', margin: 0 }}>InterviewIQ.AI Report</h2>
+          <span style={{ fontSize: '0.85rem', color: 'var(--surface-500)' }}>{new Date().toLocaleDateString()}</span>
+        </div>
+      </div>
+
       <div className="report-header">
         <h1>Interview Report</h1>
         <p>Performance analysis and improvement suggestions</p>
@@ -178,8 +189,11 @@ export default function Report() {
       )}
 
       {/* ── Actions ──────────────────────────── */}
-      <div className="report-actions">
-        <Link to="/setup" className="btn btn-primary">
+      <div className="report-actions no-print">
+        <button onClick={handleDownload} className="btn btn-primary">
+          Download Report
+        </button>
+        <Link to="/setup" className="btn btn-outline">
           New Interview
         </Link>
         <Link to="/" className="btn btn-outline">

@@ -394,7 +394,7 @@ export default function Interview() {
                 onClick={handleNextQuestion}
                 style={{ marginTop: 16 }}
               >
-                {questionNumber >= MAX_QUESTIONS ? 'View Final Report' : (feedback.next_question ? 'Next Question →' : 'View Final Report')}
+                {questionNumber >= MAX_QUESTIONS ? 'View Final Report' : 'Next Question →'}
               </button>
             </div>
           )}

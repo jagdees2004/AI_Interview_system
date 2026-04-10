@@ -1953,3 +1953,96 @@ input, textarea, select {
 .modal-actions .btn {
   min-width: 120px;
 }
+
+/* --- Print Styles --------------------------------- */
+@media print {
+  .no-print,
+  .navbar,
+  .report-actions,
+  .hero-particles,
+  body::before {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .report-page {
+    padding: 0 !important;
+    max-width: 100% !important;
+    background: transparent !important;
+  }
+
+  .report-header h1 {
+    color: #0f172a !important;
+  }
+
+  .report-score-hero {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1e293b !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    margin-bottom: 30px !important;
+  }
+
+  .report-score-value {
+    color: #4f46e5 !important;
+  }
+
+  .report-metrics {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
+  }
+
+  .report-metric-card {
+    background: white !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1e293b !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .qa-review-card {
+    background: white !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1e293b !important;
+    page-break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    margin-bottom: 20px !important;
+  }
+
+  .qa-review-card h4, 
+  .qa-review-card strong {
+    color: #0f172a !important;
+  }
+
+  .qa-review-card p {
+    color: #334155 !important;
+  }
+
+  .report-section {
+    page-break-inside: avoid;
+    margin-top: 30px !important;
+  }
+
+  h1, h2, h3, h4 {
+    color: black !important;
+  }
+}
+
+.no-screen {
+  display: none !important;
+}
+
+@media print {
+  .no-screen {
+    display: block !important;
+  }
+}
