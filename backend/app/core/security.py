@@ -26,6 +26,8 @@ async def get_current_user_id(
     try:
         decoded_token = auth.verify_id_token(token)
     except Exception as exc:
+        from app.core.logging import logger
+        logger.error(f"Firebase token verification failed: {exc}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Invalid Firebase ID token: {str(exc)}",

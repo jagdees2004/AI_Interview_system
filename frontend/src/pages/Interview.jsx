@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Mic, MicOff, Bot, Square, Volume2 } from 'lucide-react';
 import {
   startInterview, submitAnswer, endInterview,
+  generateNextQuestion,
   stopSpeaking,
   speakText
 } from '../api';
@@ -107,20 +108,31 @@ export default function Interview() {
     }
   };
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = async () => {
     if (questionNumber >= MAX_QUESTIONS) {
       handleEndInterview();
       return;
     }
-    if (feedback?.next_question) {
-      const nextQ = feedback.next_question;
+
+    setPhase('loading');
+    setAnswerText('');
+    setFeedback(null);
+
+    try {
+      let nextQ;
+      if (feedback?.next_question) {
+        nextQ = feedback.next_question;
+      } else {
+        // Fetch a fresh question based on history if no follow-up was generated
+        nextQ = await generateNextQuestion(id);
+      }
+      
       setCurrentQuestion(nextQ);
       setQuestionNumber(prev => prev + 1);
-      setAnswerText('');
-      setFeedback(null);
       speakQuestion(nextQ);
-    } else {
-      handleEndInterview();
+    } catch (err) {
+      setError('Failed to load next question: ' + err.message);
+      setPhase('active');
     }
   };
 

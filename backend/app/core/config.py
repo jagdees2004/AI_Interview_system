@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: str = ""
     GOOGLE_REDIRECT_URI: str = "http://localhost:8000/api/v1/auth/google/callback"
     FIREBASE_PROJECT_ID: str = "ai-interview-system-5c7a1"
+    FIREBASE_CREDENTIALS_JSON: str = ""  # Can hold the entire JSON content as a string
 
     # ── Groq ─────────────────────────────────────────────
     GROQ_API_KEY: str = ""
@@ -42,7 +43,7 @@ class Settings(BaseSettings):
     UPLOAD_DIR: str = "./uploads"
 
     # ── CORS ─────────────────────────────────────────────
-    CORS_ORIGINS: str = '["http://localhost:3000","http://localhost:5173"]'
+    CORS_ORIGINS: str = '["*"]'
 
     @property
     def cors_origins_list(self) -> List[str]:

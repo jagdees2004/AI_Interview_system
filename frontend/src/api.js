@@ -1,7 +1,7 @@
 import { auth, db } from './firebase';
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 
-const API_BASE = 'http://localhost:8000/api/v1';
+const API_BASE = 'https://ai-interview-system-fauo.onrender.com/api/v1';
 
 async function getFirebaseToken() {
   const user = auth.currentUser;
@@ -20,8 +20,10 @@ async function request(path, options = {}) {
   const res = await fetch(url, { ...options, headers });
 
   if (!res.ok) {
+    const status = res.status;
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.detail || `Request failed: ${res.status}`);
+    console.error(`[API Error] ${status} ${url}:`, body);
+    throw new Error(body.detail || `Request failed: ${status}`);
   }
 
   const contentType = res.headers.get('content-type') || '';

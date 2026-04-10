@@ -24,18 +24,43 @@ async def lifespan(app: FastAPI):
     try:
         firebase_admin.get_app()
     except ValueError:
-        cred_path = "firebase-credentials.json"
-        if os.path.exists(cred_path):
-            cred = credentials.Certificate(cred_path)
-            firebase_admin.initialize_app(cred)
-            logger.info(f"Firebase Admin SDK initialized using {cred_path}")
-        else:
+        initialized = False
+        
+        # 1. Try environment variable content first
+        if settings.FIREBASE_CREDENTIALS_JSON:
+            try:
+                import json as py_json
+                cred_dict = py_json.loads(settings.FIREBASE_CREDENTIALS_JSON)
+                cred = credentials.Certificate(cred_dict)
+                firebase_admin.initialize_app(cred)
+                logger.info("Firebase Admin SDK initialized using FIREBASE_CREDENTIALS_JSON env var")
+                initialized = True
+            except Exception as e:
+                logger.error(f"Failed to initialize Firebase from env var: {e}")
+
+        # 2. Try file paths if not initialized
+        if not initialized:
+            cred_paths = [
+                "firebase-credentials.json",
+                "/etc/secrets/firebase-credentials.json",  # Render secret file path
+            ]
+            for path in cred_paths:
+                if os.path.exists(path):
+                    try:
+                        cred = credentials.Certificate(path)
+                        firebase_admin.initialize_app(cred)
+                        logger.info(f"Firebase Admin SDK initialized using {path}")
+                        initialized = True
+                        break
+                    except Exception as e:
+                        logger.error(f"Failed to initialize Firebase from {path}: {e}")
+
+        # 3. Last resort fallback
+        if not initialized:
             logger.warning(
-                f"No '{cred_path}' found! Please download your service account key "
-                "from Firebase Console and place it in the backend folder. "
+                "No Firebase credentials found! Please check your Render secrets or env vars. "
                 "Using default credentials instead (which may fail token verification)."
             )
-            # Default initialization if credentials are missing
             firebase_admin.initialize_app(options={'projectId': settings.FIREBASE_PROJECT_ID})
 
     yield
