@@ -193,9 +193,6 @@ export default function Report() {
         <button onClick={handleDownload} className="btn btn-primary">
           Download Report
         </button>
-        <Link to="/setup" className="btn btn-outline">
-          New Interview
-        </Link>
         <Link to="/" className="btn btn-outline">
           <ArrowLeft size={18} /> Home
         </Link>

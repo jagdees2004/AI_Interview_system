@@ -75,7 +75,6 @@ export default function History() {
     <div className="history-page">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
         <h1>Interview History</h1>
-        <Link to="/setup" className="btn btn-green">New Interview</Link>
       </div>
 
       {error && (
@@ -92,7 +91,6 @@ export default function History() {
             Complete your first AI interview to see results here.
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 24 }}>
-            <Link to="/setup" className="btn btn-green">Start Interview</Link>
             <Link to="/" className="btn btn-outline">
               <ArrowLeft size={16} /> Home
             </Link>
