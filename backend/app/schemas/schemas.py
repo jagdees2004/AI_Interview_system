@@ -103,5 +103,3 @@ class AnalyticsResponse(BaseModel):
     overall_score: float
     analytics: AnalyticsData
 
-class TranscriptionResponse(BaseModel):
-    transcript: str
